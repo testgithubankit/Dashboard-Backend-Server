@@ -5,6 +5,7 @@ import com.paymentDashboard.dashboard.repository.MyOrderRepository;
 import com.paymentDashboard.dashboard.services.BookingService;
 import com.paymentDashboard.dashboard.services.CustomerServices;
 import com.paymentDashboard.dashboard.services.OtpService;
+import com.paymentDashboard.dashboard.services.PaypalService;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -13,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +31,8 @@ public class Controller {
 
     private final BookingService bookingService;
 
-
+    @Autowired
+    private PaypalService paypalService;
     @Autowired
     private OtpService otpService;
 
@@ -49,6 +54,34 @@ public class Controller {
     public List<Customer> getAllUserData() {
         return customerService.getCustomer();
     }
+    @PostMapping("/token")
+    public ResponseEntity<Map<String, String>> generateAccessToken() {
+        String accessToken = paypalService.getAccessToken();
+
+        if (accessToken != null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("access_token", accessToken);
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "Failed to generate access token"));
+        }
+    }
+
+    @PostMapping("/paypal-payment")
+    public ResponseEntity<String> createPayment(@RequestBody PaypalOrders paypalOrder) {
+        String accessToken = paypalService.getAccessToken();
+
+        if (accessToken != null) {
+            // Use the accessToken and paypalOrder to make the necessary API calls to PayPal
+            // You might want to use the PayPal SDK to create the payment
+            // For simplicity, we'll return a success message here
+
+            return ResponseEntity.ok("Payment created successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create payment");
+        }
+    }
+
 
     @PutMapping("/update/{_id}")
     public ResponseEntity<?> updateData(@RequestBody Customer customer, @PathVariable Long _id) {
