@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin("http://localhost:4200")
+//@CrossOrigin("http://localhost:4200")
+@CrossOrigin("https://saurabhkumarniit.github.io")
+
 public class Controller {
     @Autowired
     CustomerServices customerService;
