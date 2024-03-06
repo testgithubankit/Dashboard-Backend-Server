@@ -1,11 +1,9 @@
 package com.paymentDashboard.dashboard.controller;
+import com.paymentDashboard.dashboard.Exception.AdminNotFoundException;
 import com.paymentDashboard.dashboard.Exception.OtpNotVerified;
 import com.paymentDashboard.dashboard.domain.*;
 import com.paymentDashboard.dashboard.repository.MyOrderRepository;
-import com.paymentDashboard.dashboard.services.BookingService;
-import com.paymentDashboard.dashboard.services.CustomerServices;
-import com.paymentDashboard.dashboard.services.OtpService;
-import com.paymentDashboard.dashboard.services.PaypalService;
+import com.paymentDashboard.dashboard.services.*;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -38,11 +36,51 @@ public class Controller {
     @Autowired
     private OtpService otpService;
 
+    private AdminServices adminService;
 
+    private SecurityTokenGenerator securityTokenGenerator;
 
     @Autowired
-    public Controller(BookingService bookingService) {
+    public Controller(AdminServices adminService, SecurityTokenGenerator securityTokenGenerator,BookingService bookingService) {
+        this.adminService = adminService;
+        this.securityTokenGenerator = securityTokenGenerator;
         this.bookingService = bookingService;
+    }
+
+
+//    @Autowired
+//    public Controller(BookingService bookingService) {
+//        this.bookingService = bookingService;
+//        this.adminServiceImpl = adminServiceImpl;
+//        this.securityTokenGenerator = securityTokenGenerator;
+//    }
+
+    //  http://localhost:8181/admin/register
+    @PostMapping("/admin/register")
+    public ResponseEntity<?> saveAdmin(@RequestBody Admin admin){
+        return new ResponseEntity<>(adminService.addAdmin(admin), HttpStatus.CREATED);
+    }
+
+    //  http://localhost:8181/admin/login
+    @PostMapping("/admin/login")
+    public ResponseEntity<?> loginAdmin(@RequestBody Admin admin) throws AdminNotFoundException {
+        ResponseEntity responseEntity = null;
+        Map<String,String> map = null;
+        try {
+            Admin admin1 = adminService.findByEmailAndPassword(admin.getEmail(), admin.getPassword());
+            if (admin1.getEmail().equals(admin.getEmail()))
+            {
+                map = securityTokenGenerator.generateToken(admin);
+//                boolean status = emailService.sendEmailInCustomerLogin(admin);
+            }
+            responseEntity = new ResponseEntity<>(map,HttpStatus.OK);
+        }catch (AdminNotFoundException e) {
+            throw new AdminNotFoundException();
+        }
+        catch (Exception e){
+            responseEntity = new ResponseEntity<>("Try After Some Time",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return responseEntity;
     }
 
     @PostMapping("/userRegister")
