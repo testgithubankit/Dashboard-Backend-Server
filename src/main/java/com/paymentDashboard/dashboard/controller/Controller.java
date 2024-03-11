@@ -211,6 +211,10 @@ public class Controller {
     public List<MyOrder> getAllPaymentHistory() {
         return myOrderRepository.findAll();
     }
+    @GetMapping("/allHistory/{email}")
+    public MyOrder getItemByEmail(@PathVariable String email)  {
+        return myOrderRepository.findByEmail(email);
+    }
 
 //    @PostMapping("/payment/update_order")
 //    public ResponseEntity<?> updatePayment(@RequestBody Map<String, Object> data) {
