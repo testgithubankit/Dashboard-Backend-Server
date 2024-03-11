@@ -1,5 +1,9 @@
 package com.paymentDashboard.dashboard.controller;
+import com.paymentDashboard.dashboard.CustomerAuthenticationService.CustomerAuthenticationService;
+import com.paymentDashboard.dashboard.CustomerAuthenticationService.SecurityTokenGeneratorCustomer;
 import com.paymentDashboard.dashboard.Exception.AdminNotFoundException;
+import com.paymentDashboard.dashboard.Exception.CustomerAlreadyExitsException;
+import com.paymentDashboard.dashboard.Exception.CustomerNotFoundException;
 import com.paymentDashboard.dashboard.Exception.OtpNotVerified;
 import com.paymentDashboard.dashboard.domain.*;
 import com.paymentDashboard.dashboard.repository.MyOrderRepository;
@@ -19,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-//@CrossOrigin("http://localhost:4200")
-@CrossOrigin("https://saurabhkumarniit.github.io")
+@CrossOrigin("http://localhost:4200")
+//@CrossOrigin("https://saurabhkumarniit.github.io")
 
 public class Controller {
     @Autowired
@@ -38,22 +42,55 @@ public class Controller {
 
     private AdminServices adminService;
 
+    private CustomerAuthenticationService customerAuthenticationService;
+
     private SecurityTokenGenerator securityTokenGenerator;
 
+    private SecurityTokenGeneratorCustomer securityTokenGeneratorCustomer;
+
     @Autowired
-    public Controller(AdminServices adminService, SecurityTokenGenerator securityTokenGenerator,BookingService bookingService) {
+    public Controller(AdminServices adminService, SecurityTokenGenerator securityTokenGenerator,
+                      BookingService bookingService,CustomerAuthenticationService customerAuthenticationService,
+                      SecurityTokenGeneratorCustomer securityTokenGeneratorCustomer) {
+        this.customerAuthenticationService=customerAuthenticationService;
         this.adminService = adminService;
         this.securityTokenGenerator = securityTokenGenerator;
         this.bookingService = bookingService;
+        this.securityTokenGeneratorCustomer=securityTokenGeneratorCustomer;
     }
 
 
-//    @Autowired
-//    public Controller(BookingService bookingService) {
-//        this.bookingService = bookingService;
-//        this.adminServiceImpl = adminServiceImpl;
-//        this.securityTokenGenerator = securityTokenGenerator;
-//    }
+    //  http://localhost:8181/student/register
+    @PostMapping("/student/register")
+    public ResponseEntity<?> saveCustomer(@RequestBody CustomerAuthentication customerAuthentication){
+        try {
+            return new ResponseEntity<>(customerAuthenticationService.registerCustomer(customerAuthentication), HttpStatus.CREATED);
+        } catch (CustomerAlreadyExitsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/student/login")
+    public ResponseEntity<?> loginCustomer(@RequestBody CustomerAuthentication customerAuthentication) throws CustomerNotFoundException {
+        ResponseEntity responseEntity = null;
+        Map<String,String> map = null;
+        try {
+            CustomerAuthentication customerAuthentication1 = customerAuthenticationService.findByEmailAndPassword(customerAuthentication.getEmail(), customerAuthentication.getPassword());
+            if (customerAuthentication1.getEmail().equals(customerAuthentication.getEmail()))
+            {
+                map = securityTokenGeneratorCustomer.generateToken(customerAuthentication);
+//                boolean status = emailService.sendEmailInCustomerLogin(customerAuthentication);
+            }
+            responseEntity = new ResponseEntity<>(map,HttpStatus.OK);
+        }catch (CustomerNotFoundException e) {
+            throw new CustomerNotFoundException();
+        }
+        catch (Exception e){
+            responseEntity = new ResponseEntity<>("Try After Some Time",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return responseEntity;
+    }
+
 
     //  http://localhost:8181/admin/register
     @PostMapping("/admin/register")

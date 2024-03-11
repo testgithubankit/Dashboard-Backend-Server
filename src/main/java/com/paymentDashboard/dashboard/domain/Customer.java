@@ -3,6 +3,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
 import java.util.List;
 
 @Entity
@@ -17,10 +18,13 @@ public class Customer {
     private String email;
     private String phoneNo;
     private Long totalAmount;
+
+    private String paymentMethod;
     private String bookedSlot;
     private List<String> paymentHistory;
 
-    public Customer(Long _id, String studentName, String yearOfStudy, String address, String demoTime, String email, String phoneNo, Long totalAmount, String bookedSlot, List<String> paymentHistory) {
+    public Customer(Long _id, String studentName, String yearOfStudy, String address, String demoTime,String paymentMethod,
+                    String email, String phoneNo, Long totalAmount, String bookedSlot, List<String> paymentHistory) {
         this._id = _id;
         this.studentName = studentName;
         this.yearOfStudy = yearOfStudy;
@@ -30,6 +34,7 @@ public class Customer {
         this.phoneNo = phoneNo;
         this.totalAmount = totalAmount;
         this.bookedSlot = bookedSlot;
+        this.paymentMethod=paymentMethod;
         this.paymentHistory = paymentHistory;
     }
 
@@ -114,6 +119,14 @@ public class Customer {
 
     public void setPaymentHistory(List<String> paymentHistory) {
         this.paymentHistory = paymentHistory;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     @Override

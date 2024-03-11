@@ -4,6 +4,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.sql.Time;
+import java.util.Date;
+
 
 @Entity
 public class MyOrder {
@@ -18,12 +21,16 @@ public class MyOrder {
     private String email;
     private String paymentId;
 
+    private Date paymentDate;
+
+    private Time paymentTime;
+
 
     public MyOrder() {
     }
 
     public MyOrder(Long myOrderId, String orderId,String email, String amount, String receipt,
-                   String status, String paymentId) {
+                   String status, String paymentId, Date paymentDate, Time paymentTime) {
         this.myOrderId = myOrderId;
         this.orderId = orderId;
         this.amount = amount;
@@ -31,6 +38,8 @@ public class MyOrder {
         this.status = status;
         this.email=email;
         this.paymentId = paymentId;
+        this.paymentDate=paymentDate;
+        this.paymentTime=paymentTime;
     }
 
     public Long getMyOrderId() {
@@ -89,7 +98,13 @@ public class MyOrder {
         this.paymentId = paymentId;
     }
 
+    public Date getPaymentDate() {
+        return paymentDate;
+    }
 
+    public void setPaymentDate(Date paymentDate) {
+        this.paymentDate = paymentDate;
+    }
 
     @Override
     public String toString() {
