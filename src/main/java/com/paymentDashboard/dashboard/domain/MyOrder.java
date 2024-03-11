@@ -15,7 +15,7 @@ public class MyOrder {
     @Id
     private Long myOrderId;
     private String orderId;
-    private String amount;
+    private Double amount;
     private String receipt;
     private String status;
     private String email;
@@ -29,7 +29,7 @@ public class MyOrder {
     public MyOrder() {
     }
 
-    public MyOrder(Long myOrderId, String orderId,String email, String amount, String receipt,
+    public MyOrder(Long myOrderId, String orderId,String email, Double amount, String receipt,
                    String status, String paymentId, Date paymentDate, Time paymentTime) {
         this.myOrderId = myOrderId;
         this.orderId = orderId;
@@ -58,7 +58,7 @@ public class MyOrder {
         this.orderId = orderId;
     }
 
-    public String getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
@@ -70,7 +70,7 @@ public class MyOrder {
         this.email = email;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

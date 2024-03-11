@@ -195,12 +195,15 @@ public class Controller {
 
         MyOrder myOrder = new MyOrder();
 
-        myOrder.setAmount(order.get("amount") + "");
+        myOrder.setAmount(order.get("amount"));
         myOrder.setOrderId(order.get("id"));
         myOrder.setPaymentId(null);
         myOrder.setStatus("created");
         myOrder.setEmail(email);
         myOrder.setReceipt(order.get("receipt"));
+        double value = myOrder.getAmount() / 100;
+        myOrder.setAmount(value);
+
         myOrderRepository.save(myOrder);
 //        boolean sendEmail = emailService.sendEmail(email,amount);
         return order.toString();
@@ -243,7 +246,7 @@ public ResponseEntity<?> updatePayment(@RequestBody Map<String, Object> data) {
         myOrder.setStatus("paid");
 
     }
-    double amountInRupees = Double.parseDouble(myOrder.getAmount()) / 100.0;
+    double amountInRupees =(myOrder.getAmount());
     myOrderRepository.save(myOrder);
 
     // Extract payment details from myOrder
