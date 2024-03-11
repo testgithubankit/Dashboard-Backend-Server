@@ -212,7 +212,7 @@ public class Controller {
         return myOrderRepository.findAll();
     }
     @GetMapping("/allHistory/{email}")
-    public MyOrder getItemByEmail(@PathVariable String email)  {
+    public List<MyOrder> getItemByEmail(@PathVariable String email)  {
         return myOrderRepository.findByEmail(email);
     }
 
