@@ -15,7 +15,9 @@ public class MyOrder {
     @Id
     private Long myOrderId;
     private String orderId;
-    private Double amount;
+    private String amount;
+    private Double totalAmount;
+
     private String receipt;
     private String status;
     private String email;
@@ -29,8 +31,8 @@ public class MyOrder {
     public MyOrder() {
     }
 
-    public MyOrder(Long myOrderId, String orderId,String email, Double amount, String receipt,
-                   String status, String paymentId, Date paymentDate, Time paymentTime) {
+    public MyOrder(Long myOrderId, String orderId,String email, String amount, String receipt,
+                   String status, String paymentId, Date paymentDate, Time paymentTime,Double totalAmount) {
         this.myOrderId = myOrderId;
         this.orderId = orderId;
         this.amount = amount;
@@ -40,6 +42,7 @@ public class MyOrder {
         this.paymentId = paymentId;
         this.paymentDate=paymentDate;
         this.paymentTime=paymentTime;
+        this.totalAmount=totalAmount;
     }
 
     public Long getMyOrderId() {
@@ -58,7 +61,7 @@ public class MyOrder {
         this.orderId = orderId;
     }
 
-    public Double getAmount() {
+    public String getAmount() {
         return amount;
     }
 
@@ -70,7 +73,7 @@ public class MyOrder {
         this.email = email;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
@@ -104,6 +107,22 @@ public class MyOrder {
 
     public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
+    }
+
+    public Double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public Time getPaymentTime() {
+        return paymentTime;
+    }
+
+    public void setPaymentTime(Time paymentTime) {
+        this.paymentTime = paymentTime;
     }
 
     @Override
